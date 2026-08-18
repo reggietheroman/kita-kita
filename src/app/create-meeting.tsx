@@ -85,7 +85,7 @@ export default function CreateMeetingScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ScreenHeader title="Create meeting" />
+        <ScreenHeader title="Create meeting" actionTitle="Create" onAction={onCreateMeeting} />
         <TextInput value={name} onChangeText={setName} placeholder="Meeting name" placeholderTextColor={theme.textSecondary} style={inputStyle} />
         <AppButton title={date || 'Choose date'} variant="secondary" onPress={() => setShowDatePicker(true)} />
         {showDatePicker ? (
@@ -121,14 +121,13 @@ export default function CreateMeetingScreen() {
         ) : null}
         <TextInput value={location} onChangeText={setLocation} placeholder="Location" placeholderTextColor={theme.textSecondary} style={inputStyle} />
         {validationError ? <ThemedText style={styles.error}>{validationError}</ThemedText> : null}
-        <AppButton title="Create meeting" onPress={onCreateMeeting} />
       </SafeAreaView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+  container: { flex: 1 },
   safeArea: {
     flex: 1,
     maxWidth: MaxContentWidth,

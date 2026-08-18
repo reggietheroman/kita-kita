@@ -83,6 +83,9 @@ export default function PersonFormScreen() {
         <ScreenHeader
           title={isEditing ? 'Edit person' : 'Add person'}
           subtitle={record.meeting.name}
+          actionIcon={isEditing ? 'save' : 'plus'}
+          actionAccessibilityLabel={isEditing ? 'Save' : 'Add person'}
+          onAction={onSave}
         />
         <TextInput
           value={id}
@@ -120,14 +123,13 @@ export default function PersonFormScreen() {
           placeholderTextColor={theme.textSecondary}
           style={inputStyle}
         />
-        <AppButton title={isEditing ? 'Save' : 'Add person'} onPress={onSave} />
       </SafeAreaView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+  container: { flex: 1 },
   safeArea: {
     flex: 1,
     maxWidth: MaxContentWidth,

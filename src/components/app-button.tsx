@@ -1,11 +1,13 @@
 import { Pressable, StyleSheet, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
 
+import { AppIcon, type AppIconName } from '@/components/app-icon';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 type AppButtonProps = Omit<PressableProps, 'style'> & {
-  title: string;
+  title?: string;
+  icon?: AppIconName;
   variant?: 'primary' | 'secondary' | 'danger';
   compact?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -13,6 +15,7 @@ type AppButtonProps = Omit<PressableProps, 'style'> & {
 
 export function AppButton({
   title,
+  icon,
   variant = 'primary',
   compact = false,
   disabled,
@@ -34,9 +37,12 @@ export function AppButton({
         style,
       ]}
       {...props}>
-      <ThemedText type="smallBold" style={[styles.label, { color }]}>
-        {title}
-      </ThemedText>
+      {icon ? <AppIcon name={icon} size={compact ? 16 : 20} color={color} /> : null}
+      {title ? (
+        <ThemedText type="smallBold" style={[styles.label, { color }]}>
+          {title}
+        </ThemedText>
+      ) : null}
     </Pressable>
   );
 }
@@ -47,16 +53,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.two,
     borderRadius: Spacing.three,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: Spacing.one,
   },
   compact: {
     minHeight: 36,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.one,
     borderRadius: Spacing.two,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: Spacing.one,
   },
   label: {
     textAlign: 'center',

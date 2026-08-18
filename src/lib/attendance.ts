@@ -1,7 +1,17 @@
+export type Meeting = {
+  id: string;
+  name: string;
+  startsAt: string;
+  endsAt: string;
+  location: string;
+};
+
 export type Attendee = {
   id: string;
   firstName: string;
   lastName: string;
+  email?: string;
+  phoneNumber?: string;
   checkedInAt: string | null;
 };
 
@@ -9,12 +19,8 @@ export type AttendeeInput = {
   id: string;
   firstName: string;
   lastName: string;
-};
-
-export type QrPayload = {
-  id: string;
-  firstName?: string;
-  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
 };
 
 export type CsvParseResult = {
@@ -22,49 +28,12 @@ export type CsvParseResult = {
   errors: string[];
 };
 
-export type ScanOutcome =
-  | { status: 'invalid' }
-  | { status: 'not_on_list'; id: string }
-  | { status: 'already_checked_in'; attendee: Attendee }
-  | { status: 'match'; attendee: Attendee };
-
 export function attendeeDisplayName(attendee: Pick<Attendee, 'firstName' | 'lastName'>): string {
   return `${attendee.firstName} ${attendee.lastName}`.trim();
 }
 
 export function checkedInCount(attendees: Attendee[]): number {
   return attendees.filter((attendee) => attendee.checkedInAt).length;
-}
-
-export function parseQrPayload(data: string): QrPayload | null {
-  const trimmed = data.trim();
-  if (!trimmed) {
-    return null;
-  }
-
-  try {
-    const parsed: unknown = JSON.parse(trimmed);
-    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-      const record = parsed as Record<string, unknown>;
-      const id = readOptionalString(record, ['id']);
-      if (!id) {
-        return null;
-      }
-      return {
-        id,
-        firstName: readOptionalString(record, ['firstName', 'first_name', 'firstname']),
-        lastName: readOptionalString(record, ['lastName', 'last_name', 'lastname']),
-      };
-    }
-  } catch {
-    // Not JSON — treat the whole string as an attendee id.
-  }
-
-  if (trimmed.includes('\n')) {
-    return null;
-  }
-
-  return { id: trimmed };
 }
 
 export function parseAttendeeCsv(text: string): CsvParseResult {
@@ -86,6 +55,11 @@ export function parseAttendeeCsv(text: string): CsvParseResult {
     ['last_name', 'lastname', 'last'].includes(header),
   );
 
+  const emailIndex = headerCells.findIndex((header) => ['email', 'email_address'].includes(header));
+  const phoneIndex = headerCells.findIndex((header) =>
+    ['phone', 'phone_number', 'phonenumber', 'mobile', 'contact_number'].includes(header),
+  );
+
   if (idIndex === -1 || firstIndex === -1 || lastIndex === -1) {
     return {
       rows,
@@ -100,6 +74,8 @@ export function parseAttendeeCsv(text: string): CsvParseResult {
     const id = (cells[idIndex] ?? '').trim();
     const firstName = (cells[firstIndex] ?? '').trim();
     const lastName = (cells[lastIndex] ?? '').trim();
+    const emailRaw = (cells[emailIndex] ?? '').trim();
+    const phoneRaw = (cells[phoneIndex] ?? '').trim();
 
     if (!id && !firstName && !lastName) {
       continue;
@@ -116,8 +92,20 @@ export function parseAttendeeCsv(text: string): CsvParseResult {
       continue;
     }
 
+    const email = normalizeEmail(emailRaw);
+    if (emailRaw && !email) {
+      errors.push(`Row ${lineNumber} has an invalid email address.`);
+      continue;
+    }
+
+    const phoneNumber = normalizePhoneNumber(phoneRaw);
+    if (phoneRaw && !phoneNumber) {
+      errors.push(`Row ${lineNumber} has an invalid phone number. Use E.164 format.`);
+      continue;
+    }
+
     seen.add(key);
-    rows.push({ id, firstName, lastName });
+    rows.push({ id, firstName, lastName, email, phoneNumber });
   }
 
   return { rows, errors };
@@ -140,6 +128,8 @@ export function mergeAttendees(
         id: row.id,
         firstName: row.firstName,
         lastName: row.lastName,
+        email: row.email,
+        phoneNumber: row.phoneNumber,
       });
       updated += 1;
     } else {
@@ -158,9 +148,17 @@ export function addAttendee(
   const id = input.id.trim();
   const firstName = input.firstName.trim();
   const lastName = input.lastName.trim();
+  const email = normalizeEmail(input.email ?? '');
+  const phoneNumber = normalizePhoneNumber(input.phoneNumber ?? '');
 
   if (!id || !firstName || !lastName) {
     return { error: 'ID, first name, and last name are required.' };
+  }
+  if ((input.email ?? '').trim() && !email) {
+    return { error: 'Please provide a valid email address.' };
+  }
+  if ((input.phoneNumber ?? '').trim() && !phoneNumber) {
+    return { error: 'Please provide a valid E.164 phone number, e.g. +639171234567.' };
   }
 
   if (attendees.some((attendee) => attendee.id.toLowerCase() === id.toLowerCase())) {
@@ -168,26 +166,8 @@ export function addAttendee(
   }
 
   return {
-    attendees: [...attendees, { id, firstName, lastName, checkedInAt: null }],
+    attendees: [...attendees, { id, firstName, lastName, email, phoneNumber, checkedInAt: null }],
   };
-}
-
-export function evaluateScan(attendees: Attendee[], rawQr: string): ScanOutcome {
-  const payload = parseQrPayload(rawQr);
-  if (!payload) {
-    return { status: 'invalid' };
-  }
-
-  const attendee = attendees.find(
-    (person) => person.id.toLowerCase() === payload.id.toLowerCase(),
-  );
-  if (!attendee) {
-    return { status: 'not_on_list', id: payload.id };
-  }
-  if (attendee.checkedInAt) {
-    return { status: 'already_checked_in', attendee };
-  }
-  return { status: 'match', attendee };
 }
 
 export function checkInAttendee(
@@ -206,17 +186,47 @@ export function clearCheckIns(attendees: Attendee[]): Attendee[] {
   return attendees.map((attendee) => ({ ...attendee, checkedInAt: null }));
 }
 
-function readOptionalString(
-  record: Record<string, unknown>,
-  keys: string[],
-): string | undefined {
-  for (const key of keys) {
-    const value = record[key];
-    if (typeof value === 'string' && value.trim()) {
-      return value.trim();
-    }
+export function normalizeEmail(value: string): string | undefined {
+  const trimmed = value.trim().toLowerCase();
+  if (!trimmed) {
+    return undefined;
   }
-  return undefined;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+    return undefined;
+  }
+  return trimmed;
+}
+
+export function normalizePhoneNumber(value: string): string | undefined {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return undefined;
+  }
+  if (!/^\+[1-9]\d{7,14}$/.test(trimmed)) {
+    return undefined;
+  }
+  return trimmed;
+}
+
+export function maskEmail(email?: string): string | undefined {
+  if (!email) {
+    return undefined;
+  }
+  const [local, domain] = email.split('@');
+  if (!local || !domain) {
+    return undefined;
+  }
+  return `${local.charAt(0)}***@${domain}`;
+}
+
+export function maskPhone(phoneNumber?: string): string | undefined {
+  if (!phoneNumber) {
+    return undefined;
+  }
+  if (phoneNumber.length < 6) {
+    return '***';
+  }
+  return `${phoneNumber.slice(0, 4)}***${phoneNumber.slice(-3)}`;
 }
 
 function normalizeHeader(header: string): string {

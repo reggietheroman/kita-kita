@@ -4,10 +4,10 @@ import {
   checkInAttendee,
   checkedInCount,
   clearCheckIns,
-  evaluateScan,
   mergeAttendees,
+  normalizeEmail,
+  normalizePhoneNumber,
   parseAttendeeCsv,
-  parseQrPayload,
   type Attendee,
 } from '@/lib/attendance';
 
@@ -19,36 +19,6 @@ function person(
 ): Attendee {
   return { id, firstName, lastName, checkedInAt };
 }
-
-describe('parseQrPayload', () => {
-  test('reads JSON with firstName and lastName', () => {
-    expect(parseQrPayload('{"id":"EMP001","firstName":"Jane","lastName":"Doe"}')).toEqual({
-      id: 'EMP001',
-      firstName: 'Jane',
-      lastName: 'Doe',
-    });
-  });
-
-  test('reads JSON with first_name and last_name', () => {
-    expect(parseQrPayload('{"id":"EMP001","first_name":"Jane","last_name":"Doe"}')).toEqual({
-      id: 'EMP001',
-      firstName: 'Jane',
-      lastName: 'Doe',
-    });
-  });
-
-  test('reads a plain id string', () => {
-    expect(parseQrPayload('  EMP001  ')).toEqual({ id: 'EMP001' });
-  });
-
-  test('returns null for empty input', () => {
-    expect(parseQrPayload('   ')).toBeNull();
-  });
-
-  test('returns null for JSON without an id', () => {
-    expect(parseQrPayload('{"firstName":"Jane"}')).toBeNull();
-  });
-});
 
 describe('parseAttendeeCsv', () => {
   test('parses id, first_name, and last_name columns', () => {
@@ -97,6 +67,17 @@ describe('parseAttendeeCsv', () => {
     expect(result.rows).toEqual([{ id: 'EMP001', firstName: 'Jane', lastName: 'Doe' }]);
     expect(result.errors).toHaveLength(2);
   });
+
+  test('parses optional email and phone columns', () => {
+    const csv = 'id,first_name,last_name,email,phone_number\nEMP001,Jane,Doe,JANE@EXAMPLE.COM,+639171234567';
+    expect(parseAttendeeCsv(csv).rows[0]).toEqual({
+      id: 'EMP001',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      email: 'jane@example.com',
+      phoneNumber: '+639171234567',
+    });
+  });
 });
 
 describe('mergeAttendees', () => {
@@ -138,31 +119,23 @@ describe('addAttendee', () => {
       error: 'ID, first name, and last name are required.',
     });
   });
+  test('rejects invalid optional contact fields', () => {
+    expect(
+      addAttendee([], {
+        id: 'EMP001',
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'invalid',
+      }),
+    ).toEqual({ error: 'Please provide a valid email address.' });
+  });
 });
 
-describe('evaluateScan and check-in', () => {
+describe('check-in', () => {
   const attendees = [
     person('EMP001', 'Jane', 'Doe'),
     person('EMP002', 'John', 'Smith', '2026-08-18T01:00:00.000Z'),
   ];
-
-  test('matches a person who is on the list', () => {
-    expect(evaluateScan(attendees, '{"id":"emp001"}')).toEqual({
-      status: 'match',
-      attendee: attendees[0],
-    });
-  });
-
-  test('rejects a QR that is not on the list', () => {
-    expect(evaluateScan(attendees, 'EMP999')).toEqual({ status: 'not_on_list', id: 'EMP999' });
-  });
-
-  test('does not count a person twice', () => {
-    expect(evaluateScan(attendees, 'EMP002')).toEqual({
-      status: 'already_checked_in',
-      attendee: attendees[1],
-    });
-  });
 
   test('increments unique check-ins on confirm', () => {
     const at = new Date('2026-08-18T02:00:00.000Z');
@@ -188,5 +161,17 @@ describe('evaluateScan and check-in', () => {
 describe('attendeeDisplayName', () => {
   test('joins first and last name', () => {
     expect(attendeeDisplayName({ firstName: 'Jane', lastName: 'Doe' })).toBe('Jane Doe');
+  });
+});
+
+describe('normalizers', () => {
+  test('normalizes email', () => {
+    expect(normalizeEmail('  USER@Example.com ')).toBe('user@example.com');
+    expect(normalizeEmail('bad-email')).toBeUndefined();
+  });
+
+  test('validates e164 phone', () => {
+    expect(normalizePhoneNumber('+639171234567')).toBe('+639171234567');
+    expect(normalizePhoneNumber('09171234567')).toBeUndefined();
   });
 });

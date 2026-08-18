@@ -60,7 +60,12 @@ export default function TransferScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ScreenHeader title={title} subtitle={record.meeting.name} />
+        <ScreenHeader
+          title={title}
+          subtitle={record.meeting.name}
+          actionTitle="Restart"
+          onAction={() => setIndex(0)}
+        />
         <ThemedText themeColor="textSecondary" type="small">
           {type === 'clone'
             ? 'Anyone who captures all frames can copy this meeting. Show only to trusted staff.'
@@ -72,14 +77,13 @@ export default function TransferScreen() {
         <ThemedText type="small" themeColor="textSecondary">
           Frame {Math.min(index + 1, frames.length)} / {Math.max(frames.length, 1)}
         </ThemedText>
-        <AppButton title="Restart loop" variant="secondary" onPress={() => setIndex(0)} />
       </SafeAreaView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+  container: { flex: 1 },
   safeArea: {
     flex: 1,
     maxWidth: MaxContentWidth,

@@ -75,10 +75,48 @@ export default function EditMeetingScreen() {
     }
   }
 
+  function onSave() {
+    const start = parseMeetingDateTime(date.trim(), startTime.trim());
+    const end = parseMeetingDateTime(date.trim(), endTime.trim());
+    if (!start || !end) {
+      setValidationError('Use date YYYY-MM-DD and times HH:mm.');
+      return;
+    }
+    if (end <= start) {
+      setValidationError('End time must be later than start time.');
+      return;
+    }
+    if (!name.trim() || !location.trim()) {
+      setValidationError('Meeting name and location are required.');
+      return;
+    }
+    setValidationError(null);
+    confirmAction({
+      title: 'Save changes?',
+      message: 'Update this meeting on this device.',
+      confirmLabel: 'Save',
+      onConfirm: () => {
+        updateMeetingRecord({
+          ...record.meeting,
+          name: name.trim(),
+          location: location.trim(),
+          startsAt: start.toISOString(),
+          endsAt: end.toISOString(),
+        });
+        router.back();
+      },
+    });
+  }
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ScreenHeader title="Edit meeting" />
+        <ScreenHeader
+          title="Edit meeting"
+          actionIcon="save"
+          actionAccessibilityLabel="Save"
+          onAction={onSave}
+        />
         <TextInput value={name} onChangeText={setName} placeholder="Name" placeholderTextColor={theme.textSecondary} style={inputStyle} />
         <AppButton title={date || 'Choose date'} variant="secondary" onPress={() => setShowDatePicker(true)} />
         {showDatePicker ? (
@@ -120,48 +158,13 @@ export default function EditMeetingScreen() {
         ) : null}
         <TextInput value={location} onChangeText={setLocation} placeholder="Location" placeholderTextColor={theme.textSecondary} style={inputStyle} />
         {validationError ? <ThemedText themeColor="textSecondary">{validationError}</ThemedText> : null}
-        <AppButton
-          title="Save"
-          onPress={() => {
-            const start = parseMeetingDateTime(date.trim(), startTime.trim());
-            const end = parseMeetingDateTime(date.trim(), endTime.trim());
-            if (!start || !end) {
-              setValidationError('Use date YYYY-MM-DD and times HH:mm.');
-              return;
-            }
-            if (end <= start) {
-              setValidationError('End time must be later than start time.');
-              return;
-            }
-            if (!name.trim() || !location.trim()) {
-              setValidationError('Meeting name and location are required.');
-              return;
-            }
-            setValidationError(null);
-            confirmAction({
-              title: 'Save changes?',
-              message: 'Update this meeting on this device.',
-              confirmLabel: 'Save',
-              onConfirm: () => {
-                updateMeetingRecord({
-                  ...record.meeting,
-                  name: name.trim(),
-                  location: location.trim(),
-                  startsAt: start.toISOString(),
-                  endsAt: end.toISOString(),
-                });
-                router.back();
-              },
-            });
-          }}
-        />
       </SafeAreaView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+  container: { flex: 1 },
   safeArea: {
     flex: 1,
     maxWidth: MaxContentWidth,

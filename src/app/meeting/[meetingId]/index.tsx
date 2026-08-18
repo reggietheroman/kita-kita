@@ -19,7 +19,7 @@ export default function MeetingDetailScreen() {
     return (
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
-          <ScreenHeader title="Meeting not found" backLabel="Back to meetings" />
+          <ScreenHeader title="Meeting not found" backLabel="Back" />
         </SafeAreaView>
       </ThemedView>
     );
@@ -30,7 +30,13 @@ export default function MeetingDetailScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ScreenHeader title={record.meeting.name} backLabel="Back to meetings" />
+        <ScreenHeader
+          title={record.meeting.name}
+          backLabel="Back"
+          actionIcon="edit"
+          actionAccessibilityLabel="Edit meeting"
+          onAction={() => router.push({ pathname: '/meeting/[meetingId]/edit', params: { meetingId } })}
+        />
         <ThemedText type="small" themeColor="textSecondary">
           {new Date(record.meeting.startsAt).toLocaleDateString()}
         </ThemedText>
@@ -56,11 +62,6 @@ export default function MeetingDetailScreen() {
             onPress={() => router.push({ pathname: '/meeting/[meetingId]/people', params: { meetingId } })}
           />
           <AppButton
-            title="Edit meeting"
-            variant="secondary"
-            onPress={() => router.push({ pathname: '/meeting/[meetingId]/edit', params: { meetingId } })}
-          />
-          <AppButton
             title="Meeting actions"
             variant="secondary"
             onPress={() =>
@@ -74,7 +75,7 @@ export default function MeetingDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+  container: { flex: 1 },
   safeArea: {
     flex: 1,
     maxWidth: MaxContentWidth,

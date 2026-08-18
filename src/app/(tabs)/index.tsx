@@ -36,7 +36,8 @@ export default function HomeScreen() {
           title="Meetings"
           subtitle={loaded ? `${records.length} meeting${records.length === 1 ? '' : 's'}` : '—'}
           showBack={false}
-          actionTitle="Add"
+          actionIcon="plus"
+          actionAccessibilityLabel="Add meeting"
           onAction={() => router.push('/create-meeting')}
         />
         <EntitySearch value={query} onChangeText={setQuery} placeholder="Search meetings" />
@@ -61,7 +62,8 @@ export default function HomeScreen() {
               </ThemedText>
               <View style={styles.rowActions}>
                 <AppButton
-                  title="Open"
+                  icon="eye"
+                  accessibilityLabel="Open"
                   variant="secondary"
                   compact
                   style={styles.action}
@@ -74,7 +76,8 @@ export default function HomeScreen() {
                   }}
                 />
                 <AppButton
-                  title="Edit"
+                  icon="edit"
+                  accessibilityLabel="Edit"
                   variant="secondary"
                   compact
                   style={styles.action}
@@ -118,12 +121,12 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
   },
   safeArea: {
     flex: 1,
     maxWidth: MaxContentWidth,
+    width: '100%',
+    alignSelf: 'center',
     paddingHorizontal: Spacing.four,
     paddingBottom: BottomTabInset + Spacing.four,
     gap: Spacing.two,

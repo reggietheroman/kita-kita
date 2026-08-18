@@ -39,22 +39,22 @@ export default function AttendeeQrScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ScreenHeader title={attendeeDisplayName(attendee)} subtitle={attendee.id} />
+        <ScreenHeader
+          title={attendeeDisplayName(attendee)}
+          subtitle={attendee.id}
+          actionTitle="Share"
+          onAction={() => Share.share({ message: qrValue || `${record.meeting.name} attendee QR` })}
+        />
         <ThemedView type="backgroundElement" style={styles.qrWrap}>
           {qrValue ? <QRCode value={qrValue} size={240} /> : <ThemedText>Generating QR...</ThemedText>}
         </ThemedView>
-        <AppButton
-          title="Share QR payload"
-          variant="secondary"
-          onPress={() => Share.share({ message: qrValue || `${record.meeting.name} attendee QR` })}
-        />
       </SafeAreaView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+  container: { flex: 1 },
   safeArea: {
     flex: 1,
     maxWidth: MaxContentWidth,

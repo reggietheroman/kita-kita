@@ -65,10 +65,10 @@ describe('<MeetingPeopleScreen />', () => {
 
     expect(screen.getByText('Jane Doe')).toBeOnTheScreen();
     expect(screen.getByPlaceholderText('Search people')).toBeOnTheScreen();
-    expect(screen.getByText('Add')).toBeOnTheScreen();
-    expect(screen.getByText('Edit')).toBeOnTheScreen();
+    expect(screen.getByLabelText('Add person')).toBeOnTheScreen();
+    expect(screen.getByLabelText('Edit')).toBeOnTheScreen();
     expect(screen.getByText('Delete')).toBeOnTheScreen();
-    expect(screen.getByText('Back')).toBeOnTheScreen();
+    expect(screen.getByLabelText('Back')).toBeOnTheScreen();
     expect(screen.queryByPlaceholderText('First name')).toBeNull();
     expect(screen.queryByText('Add person')).toBeNull();
   });

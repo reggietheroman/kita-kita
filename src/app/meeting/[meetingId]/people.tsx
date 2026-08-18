@@ -78,7 +78,8 @@ export default function MeetingPeopleScreen() {
         <ScreenHeader
           title="People"
           subtitle={record.meeting.name}
-          actionTitle="Add"
+          actionIcon="plus"
+          actionAccessibilityLabel="Add person"
           onAction={() =>
             router.push({
               pathname: '/meeting/[meetingId]/person',
@@ -135,7 +136,8 @@ export default function MeetingPeopleScreen() {
                   }
                 />
                 <AppButton
-                  title="Edit"
+                  icon="edit"
+                  accessibilityLabel="Edit"
                   variant="secondary"
                   compact
                   style={styles.action}

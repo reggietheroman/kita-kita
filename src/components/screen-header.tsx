@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { AppButton } from '@/components/app-button';
+import { type AppIconName } from '@/components/app-icon';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 
@@ -11,6 +12,8 @@ type ScreenHeaderProps = {
   backLabel?: string;
   showBack?: boolean;
   actionTitle?: string;
+  actionIcon?: AppIconName;
+  actionAccessibilityLabel?: string;
   onAction?: () => void;
 };
 
@@ -20,28 +23,51 @@ export function ScreenHeader({
   backLabel = 'Back',
   showBack = true,
   actionTitle,
+  actionIcon,
+  actionAccessibilityLabel,
   onAction,
 }: ScreenHeaderProps) {
   const router = useRouter();
+  const hasAction = Boolean(onAction && (actionTitle || actionIcon));
 
   return (
     <View style={styles.wrap}>
-      {showBack ? (
-        <AppButton title={backLabel} variant="secondary" compact onPress={() => router.back()} />
+      {showBack || hasAction ? (
+        <View style={styles.topRow}>
+          {showBack ? (
+            <AppButton
+              icon="back"
+              accessibilityLabel={backLabel}
+              variant="secondary"
+              compact
+              style={styles.backButton}
+              onPress={() => router.back()}
+            />
+          ) : (
+            <View />
+          )}
+          {hasAction ? (
+            <AppButton
+              title={actionTitle}
+              icon={actionIcon}
+              accessibilityLabel={actionAccessibilityLabel ?? actionTitle}
+              variant="secondary"
+              compact
+              onPress={onAction}
+            />
+          ) : null}
+        </View>
       ) : null}
-      <View style={styles.titleRow}>
+      <View style={styles.titleBlock}>
         <ThemedText type="subtitle" style={styles.title}>
           {title}
         </ThemedText>
-        {actionTitle && onAction ? (
-          <AppButton title={actionTitle} variant="secondary" compact onPress={onAction} />
+        {subtitle ? (
+          <ThemedText type="small" themeColor="textSecondary">
+            {subtitle}
+          </ThemedText>
         ) : null}
       </View>
-      {subtitle ? (
-        <ThemedText type="small" themeColor="textSecondary">
-          {subtitle}
-        </ThemedText>
-      ) : null}
     </View>
   );
 }
@@ -50,13 +76,18 @@ const styles = StyleSheet.create({
   wrap: {
     gap: Spacing.two,
   },
-  titleRow: {
+  topRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: Spacing.two,
+    minHeight: 36,
   },
-  title: {
-    flex: 1,
+  backButton: {
+    minWidth: 40,
+    paddingHorizontal: Spacing.one,
   },
+  titleBlock: {
+    gap: Spacing.half,
+  },
+  title: {},
 });

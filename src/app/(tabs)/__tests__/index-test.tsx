@@ -58,9 +58,9 @@ describe('<HomeScreen />', () => {
     expect(screen.getByText('Weekly Standup')).toBeOnTheScreen();
     expect(screen.getByText('1 / 2')).toBeOnTheScreen();
     expect(screen.getByPlaceholderText('Search meetings')).toBeOnTheScreen();
-    expect(screen.getByText('Add')).toBeOnTheScreen();
-    expect(screen.getByText('Open')).toBeOnTheScreen();
-    expect(screen.getByText('Edit')).toBeOnTheScreen();
+    expect(screen.getByLabelText('Add meeting')).toBeOnTheScreen();
+    expect(screen.getByLabelText('Open')).toBeOnTheScreen();
+    expect(screen.getByLabelText('Edit')).toBeOnTheScreen();
     expect(screen.getByText('Delete')).toBeOnTheScreen();
     expect(screen.queryByText('Create new meeting')).toBeNull();
   });

@@ -19,7 +19,7 @@ export default function MeetingActionsScreen() {
     return (
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
-          <ScreenHeader title="Meeting not found" backLabel="Back to meetings" />
+          <ScreenHeader title="Meeting not found" backLabel="Back" />
         </SafeAreaView>
       </ThemedView>
     );
@@ -89,7 +89,7 @@ export default function MeetingActionsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+  container: { flex: 1 },
   safeArea: {
     flex: 1,
     maxWidth: MaxContentWidth,
