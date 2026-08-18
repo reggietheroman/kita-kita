@@ -1,56 +1,58 @@
-# Welcome to your Expo app 👋
+# Kita-Kita
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Kita-Kita is a local-first Expo app for managing meetings and recording attendance. It lets event organizers maintain attendee lists, issue encrypted attendee QR codes, scan check-ins, and transfer meeting data between devices through QR codes.
 
-## Get started
+## Features
 
-1. Install dependencies
+- Create, edit, search, and delete meetings.
+- Add and edit attendees, or import attendee records from CSV.
+- Generate attendee QR codes and scan them to record attendance.
+- View attendance totals and clear check-ins when an event is reused.
+- Copy a meeting to another device or synchronize attendance using multi-frame QR transfers.
+- Store meeting data locally with encrypted application storage and keys held in `expo-secure-store`.
 
-   ```bash
-   npm install
-   ```
+## Development
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Install dependencies:
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Start the Expo development server:
 
-### Other setup steps
+```bash
+npm start
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Open the app with one of the following:
 
-## Learn more
+```bash
+npm run ios       # iOS simulator
+npm run android   # Android emulator
+npm run web       # Web browser
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+The app uses Expo Router file-based routing. Application routes live in `src/app`, reusable UI components live in `src/components`, and domain logic lives in `src/lib`.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Quality checks
 
-## Join the community
+Run the test suite, linter, and privacy gate with:
 
-Join our community of developers creating universal apps.
+```bash
+npm test
+npm run lint
+npm run privacy-check
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Privacy and data handling
+
+Kita-Kita is designed for local-first attendance workflows. Meeting and attendee records are stored on the device; there is no cloud sync service in this project. App state is encrypted before it is written to local storage, while encryption keys are kept in the platform secure store.
+
+Only collect attendee information needed for attendance operations. Review the [privacy notice template](docs/privacy-notice-template.md), [PIA template](docs/privacy-impact-assessment-template.md), and [DPA compliance plan](docs/dpa-compliance-plan.md) before deploying the app for real events.
+
+## Project documentation
+
+- [Privacy documentation](docs/README.md)
+- [Expo documentation](https://docs.expo.dev/versions/v57.0.0/)
+- [Expo Router documentation](https://docs.expo.dev/router/introduction/)
