@@ -4,9 +4,13 @@
   "version": "1.0.0",
   "dependencies": {
     "@expo/ui": "~57.0.11",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~57.0.14",
+    "expo-camera": "~57.0.3",
     "expo-constants": "~57.0.12",
     "expo-device": "~57.0.1",
+    "expo-document-picker": "~57.0.1",
+    "expo-file-system": "~57.0.4",
     "expo-font": "~57.0.1",
     "expo-glass-effect": "~57.0.1",
     "expo-image": "~57.0.3",
@@ -28,7 +32,11 @@
     "react-native-worklets": "0.10.1"
   },
   "devDependencies": {
+    "@testing-library/react-native": "^14.0.1",
+    "@types/jest": "29.5.14",
     "@types/react": "~19.2.2",
+    "jest": "~29.7.0",
+    "jest-expo": "~57.0.4",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -37,7 +45,18 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "watchman": false,
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg)"
+    ],
+    "moduleNameMapper": {
+      "\\.css$": "<rootDir>/src/test/style-mock.js"
+    }
   },
   "private": true
 }
