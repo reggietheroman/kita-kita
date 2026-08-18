@@ -1,0 +1,58 @@
+---
+description: Enforces compliance with the Philippine Data Privacy Act (RA 10173) and NPC circulars when handling personal data (names, emails, phone numbers).
+alwaysApply: true
+---
+
+# Philippine Data Privacy Act (RA 10173) & NPC Compliance Rules
+
+Every code change in this repository must comply with the **Philippine Data Privacy Act of 2012 (RA 10173)**, **NPC Circular 2023-06 (Security of Personal Data)**, and **NPC Advisory 2023-01 (Deceptive Design Patterns)**.
+
+---
+
+## 1. Zero Raw PII in Logs & Telemetry
+Never log raw Personal Information (PII) including `email`, `phoneNumber`, `firstName`, `lastName`, or complete attendee objects in `console.log`, `console.warn`, `console.error`, crash handlers, or telemetry.
+
+```typescript
+// ❌ BAD: Leaks PII in logs
+console.log('Processed attendee:', attendee);
+console.error(`Failed sending to ${attendee.email}`);
+
+// ✅ GOOD: Anonymized / Masked logging
+console.log('Processed attendee ID:', attendee.id);
+console.error(`Failed sending to ${maskEmail(attendee.email)}`);
+```
+
+---
+
+## 2. Storage Encryption at Rest
+Personal data must never be saved in unencrypted plaintext on user devices or local storage.
+
+- High-risk credentials & encryption keys must use hardware-backed keystore/keychain (`expo-secure-store`).
+- Stored attendee records containing names, emails, or phone numbers must be encrypted or protected via secure storage wrappers before writing to disk.
+
+---
+
+## 3. Data Minimization & Proportionality
+Only collect, parse, and retain personal data fields that are strictly necessary for event attendance.
+
+- Validate format (e.g. E.164 phone numbers, valid email RFC standard).
+- Normalize input (trim whitespace, lowercase emails).
+- Do not collect unnecessary sensitive personal information (e.g., government IDs, birthdates, health records) unless explicitly mandated and covered by an approved PIA.
+
+---
+
+## 4. Mandatory Data Subject Rights Support
+Every feature handling personal data must support the 8 statutory rights under RA 10173 Section 16:
+
+1. **Right to Erasure:** Provide mechanisms to permanently delete individual attendees and a full "Wipe Event Data" option.
+2. **Right to Rectification:** Allow editing/updating attendee contact info directly.
+3. **Right to Data Portability:** Allow exporting attendee data in standard JSON or CSV formats.
+4. **Right to be Informed:** Ensure in-app Privacy Notice and consent modals are accessible and up to date.
+
+---
+
+## 5. No Deceptive Design Patterns (Dark Patterns)
+Pursuant to **NPC Advisory 2023-01**:
+- Consent requests must give equal visual prominence to "Accept" and "Decline" actions.
+- No pre-checked checkboxes for optional data collection or communications.
+- Consent must be unbundled, explicit, and freely given.
