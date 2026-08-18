@@ -3,7 +3,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import { AttendanceProvider } from '@/hooks/use-attendance';
+import { MeetingsProvider } from '@/hooks/use-meetings';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -11,21 +11,20 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <AttendanceProvider>
+    <MeetingsProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <AnimatedSplashOverlay />
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
           <Stack.Screen
             name="scan"
             options={{
-              headerShown: false,
               presentation: 'fullScreenModal',
               animation: 'fade',
             }}
           />
         </Stack>
       </ThemeProvider>
-    </AttendanceProvider>
+    </MeetingsProvider>
   );
 }

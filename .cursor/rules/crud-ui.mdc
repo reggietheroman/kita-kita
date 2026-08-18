@@ -1,0 +1,26 @@
+---
+description: CRUD list and form UI conventions for meetings, attendees, and future entities.
+alwaysApply: true
+---
+
+# CRUD UI
+
+List pages show one entity type. Search sits above the list. Create/edit forms do not belong on the list.
+
+- **Add** is a compact secondary header control. Never a primary CTA or inline form on the list page.
+- Each list row owns **Edit** and **Delete**. Extra actions (Open, QR) may sit on the same row.
+- Create and edit open a **sub-screen**. Delete stays on the list and uses a confirmation dialog.
+- Saving meeting or attendee edits: edit fields → Save → confirmation → persist. Do not write on Save alone.
+- Every sub-screen has **Back** (or Close). Breadcrumbs are not required.
+- Use `confirmAction` from `src/lib/confirm.ts` for delete and save confirmations. Cancel and confirm must both be present.
+
+```tsx
+// ❌ BAD: create form on the list page
+<TextInput placeholder="First name" />
+<AppButton title="Add person" onPress={onSave} />
+<FlatList data={people} />
+
+// ✅ GOOD: list + row actions; form lives on a sub-screen
+<ScreenHeader title="People" actionTitle="Add" onAction={() => router.push(addRoute)} />
+<EntitySearch value={query} onChangeText={setQuery} placeholder="Search people" />
+```

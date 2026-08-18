@@ -7,10 +7,18 @@ import { useTheme } from '@/hooks/use-theme';
 type AppButtonProps = Omit<PressableProps, 'style'> & {
   title: string;
   variant?: 'primary' | 'secondary' | 'danger';
+  compact?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
-export function AppButton({ title, variant = 'primary', disabled, style, ...props }: AppButtonProps) {
+export function AppButton({
+  title,
+  variant = 'primary',
+  compact = false,
+  disabled,
+  style,
+  ...props
+}: AppButtonProps) {
   const theme = useTheme();
   const backgroundColor =
     variant === 'primary' ? theme.text : variant === 'danger' ? '#c62828' : theme.backgroundElement;
@@ -21,7 +29,7 @@ export function AppButton({ title, variant = 'primary', disabled, style, ...prop
       accessibilityRole="button"
       disabled={disabled}
       style={({ pressed }) => [
-        styles.button,
+        compact ? styles.compact : styles.button,
         { backgroundColor, opacity: disabled ? 0.5 : pressed ? 0.75 : 1 },
         style,
       ]}
@@ -39,6 +47,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.two,
     borderRadius: Spacing.three,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  compact: {
+    minHeight: 36,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.one,
+    borderRadius: Spacing.two,
     alignItems: 'center',
     justifyContent: 'center',
   },
