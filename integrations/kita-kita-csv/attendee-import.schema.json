@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/reggietheroman/kita-kita/main/integrations/kita-kita-csv/attendee-import.schema.json",
+  "title": "Kita-Kita attendee import row",
+  "description": "One CSV row for Kita-Kita People import. Use canonical column names. Extra properties are not part of the contract: do not send government IDs, birthdates, health data, or other PII beyond these fields (RA 10173 data minimization). The parser ignores unknown columns.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "first_name", "last_name"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable attendee identifier from the source system. Duplicate ids in the same file are skipped. Import merges by case-insensitive id and does not clear existing check-ins."
+    },
+    "first_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Given name. Header aliases: firstname, first, First Name."
+    },
+    "last_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Family name. Header aliases: lastname, last, Last Name."
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Optional contact email. Normalized to lowercase on import. Header aliases: email_address. Invalid values skip the row."
+    },
+    "phone_number": {
+      "type": "string",
+      "pattern": "^\\+[1-9]\\d{7,14}$",
+      "description": "Optional E.164 phone (leading +, 8–15 digits, first digit 1–9). Header aliases: phone, phonenumber, mobile, contact_number. Invalid values skip the row."
+    }
+  }
+}

@@ -80,6 +80,7 @@ Only collect attendee information needed for attendance operations. Review the [
 
 ## Project documentation
 
+- [Integrate (attendee CSV)](docs/integrate.md)
 - [Privacy documentation](docs/README.md)
 - [App flow diagrams](docs/app-flows.md)
 - [Expo documentation](https://docs.expo.dev/versions/v57.0.0/)

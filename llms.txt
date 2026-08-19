@@ -1,0 +1,15 @@
+# Kita-Kita
+
+> Local-first Expo app for meeting attendance. Other applications integrate by exporting an attendee CSV; organizers import it on device. There is no HTTP API.
+
+## Integrate
+
+- [Attendee CSV import](docs/integrate.md): human overview of the file contract
+- [Agent skill](integrations/kita-kita-csv/SKILL.md): copyable instructions for generating a Kita-Kita roster CSV
+- [JSON Schema](integrations/kita-kita-csv/attendee-import.schema.json): one attendee import row (canonical CSV column names)
+- [Example CSV](integrations/kita-kita-csv/examples/attendees.csv): golden file accepted by the parser
+- [CSV parser](src/lib/attendance.ts): `parseAttendeeCsv` is the source of truth
+
+## Privacy
+
+- [Privacy documentation](docs/README.md): RA 10173 / NPC kit installed in this app

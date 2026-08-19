@@ -1,0 +1,4 @@
+id,first_name,last_name,email,phone_number
+EMP001,Jane,Doe,jane@example.com,+639171234567
+EMP002,"Mary, Jane",Santos,mary.jane@example.com,+639181234567
+EMP003,Juan,Dela Cruz,,

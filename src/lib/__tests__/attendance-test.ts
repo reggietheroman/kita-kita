@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import {
   addAttendee,
   attendeeDisplayName,
@@ -77,6 +80,33 @@ describe('parseAttendeeCsv', () => {
       email: 'jane@example.com',
       phoneNumber: '+639171234567',
     });
+  });
+
+  test('accepts the published golden example CSV with no errors', () => {
+    const csv = readFileSync(
+      join(process.cwd(), 'integrations/kita-kita-csv/examples/attendees.csv'),
+      'utf8',
+    );
+    const result = parseAttendeeCsv(csv);
+
+    expect(result.errors).toEqual([]);
+    expect(result.rows).toEqual([
+      {
+        id: 'EMP001',
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane@example.com',
+        phoneNumber: '+639171234567',
+      },
+      {
+        id: 'EMP002',
+        firstName: 'Mary, Jane',
+        lastName: 'Santos',
+        email: 'mary.jane@example.com',
+        phoneNumber: '+639181234567',
+      },
+      { id: 'EMP003', firstName: 'Juan', lastName: 'Dela Cruz' },
+    ]);
   });
 });
 
