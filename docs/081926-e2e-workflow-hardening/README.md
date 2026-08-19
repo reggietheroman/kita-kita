@@ -70,8 +70,7 @@ npm run test:e2e:ui
 - `npm run privacy-check`: passed with no blocking violations.
 - `npm run test:e2e:ui -- --help`: confirmed the UI command uses the shared preflight wrapper.
 - `npm run test:e2e:headed -- --list`: confirmed the headed command uses the shared preflight wrapper.
-
-`npx tsc --noEmit` still reports pre-existing project type errors, including Jest global typing and unrelated meeting edit-screen errors. TypeScript compilation is not currently part of the CI workflow or this plan's acceptance criteria.
+- `npx tsc --noEmit`: passed after adding Jest global typings and completing the meeting edit-screen styles/type narrowing.
 
 ## Related files
 

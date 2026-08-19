@@ -49,6 +49,7 @@ export default function EditMeetingScreen() {
     );
   }
 
+  const meeting = record.meeting;
   const inputStyle = [styles.input, { backgroundColor: theme.backgroundElement, color: theme.text }];
 
   function onDateChange(value?: Date) {
@@ -97,7 +98,7 @@ export default function EditMeetingScreen() {
       confirmLabel: 'Save',
       onConfirm: () => {
         updateMeetingRecord({
-          ...record.meeting,
+          ...meeting,
           name: name.trim(),
           location: location.trim(),
           startsAt: start.toISOString(),
@@ -207,5 +208,12 @@ const styles = StyleSheet.create({
     minHeight: 42,
     borderRadius: Spacing.two,
     paddingHorizontal: Spacing.three,
+  },
+  timeRow: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+  },
+  timeInput: {
+    flex: 1,
   },
 });
