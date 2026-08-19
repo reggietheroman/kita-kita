@@ -22,13 +22,15 @@ journey’s blast-radius code has been committed and verified by E2E/unit tests.
 - Attendee QR view (share): [`src/app/meeting/[meetingId]/attendee/[attendeeId].tsx`](../src/app/meeting/[meetingId]/attendee/[attendeeId].tsx) → `/meeting/[meetingId]/attendee/[attendeeId]`
 - Meeting actions (transfer/clear/delete): [`src/app/meeting/[meetingId]/actions.tsx`](../src/app/meeting/[meetingId]/actions.tsx) → `/meeting/[meetingId]/actions`
 - Transfer QR display: [`src/app/meeting/[meetingId]/transfer.tsx`](../src/app/meeting/[meetingId]/transfer.tsx) → `/meeting/[meetingId]/transfer`
-- Camera scanner: [`src/app/scan.tsx`](../src/app/scan.tsx) → `/scan?mode=attendee|transfer&meetingId=...`
+- Camera scanner: [`src/app/scan.tsx`](../src/app/scan.tsx) → `/scan?mode=attendee|transfer|create-meeting&meetingId=...`
 
 ## `create-meeting-with-people`
 
 ```mermaid
 flowchart TD
   home["Meetings home / (empty → shows \"No meetings yet\")"] --> createMeeting["Create meeting /create-meeting"]
+  createMeeting --> scanCreate["Scan meeting QR /scan?mode=create-meeting"]
+  scanCreate --> copiedDetail["Copied meeting detail /meeting/[meetingId]"]
   createMeeting --> detail["Meeting detail /meeting/[meetingId]"]
   detail --> people["People list /meeting/[meetingId]/people"]
   people --> addPerson["Add person /meeting/[meetingId]/person"]
@@ -45,6 +47,10 @@ flowchart TD
     - CTA: header action **“Add meeting”** (plus icon) that routes to `/create-meeting`
 - Meeting creation:
   - `src/app/create-meeting.tsx` collects meeting name, date, start/end time, location
+  - the **Scan meeting QR** section opens `/scan?mode=create-meeting` as an alternate creation path
+- Scan creation:
+  - `src/app/scan.tsx` accepts clone frames only in `create-meeting` mode
+  - successful clone application opens the copied meeting detail directly
 - Meeting detail:
   - `src/app/meeting/[meetingId]/index.tsx` shows:
     - `0 of 0 expected` when no attendees exist yet
@@ -60,6 +66,7 @@ flowchart TD
 | Journey step coverage | Included in |
 |---|---|
 | Create meeting, open meeting detail, see scan/manage/action buttons | `e2e/meetings.spec.ts` |
+| Open **Scan meeting QR**, verify clone-mode instructions, and close back to manual creation | `e2e/meetings.spec.ts` |
 | Add multiple attendees, verify people list UI + masking, search/filter, edit/delete QR view | `e2e/attendees.spec.ts`, `e2e/attendance.spec.ts` |
 | Persistence across hard reload | `e2e/persistence.spec.ts` |
 
@@ -124,9 +131,11 @@ flowchart TD
   actions["Meeting actions /meeting/[meetingId]/actions"] --> syncQr["Attendance sync QR /meeting/[meetingId]/transfer?type=sync"]
   actions --> cloneQr["Copy meeting QR /meeting/[meetingId]/transfer?type=clone"]
   actions --> scanTransfer["Scan from another device /scan?mode=transfer"]
+  createMeeting["Create meeting /create-meeting"] --> scanCreate["Scan meeting QR /scan?mode=create-meeting"]
   cloneQr --> showTransferFrames["Rotating QR frames (clone/sync)"]
   syncQr --> showTransferFrames
   scanTransfer --> apply["Transfer complete / error"]
+  scanCreate --> cloneApply["Create copied meeting /meeting/[meetingId]"]
 ```
 
 ### Screens in this journey
@@ -136,6 +145,9 @@ flowchart TD
     - **Show attendance QR** → `/meeting/[meetingId]/transfer?type=sync`
     - **Copy meeting QR** → `/meeting/[meetingId]/transfer?type=clone`
     - **Scan from another device** → `/scan?mode=transfer`
+- Create-from-device entry point:
+  - `src/app/create-meeting.tsx` **Scan meeting QR** → `/scan?mode=create-meeting`
+  - this mode accepts clone frames only and rejects attendance-sync frames
 - Transfer QR display:
   - `src/app/meeting/[meetingId]/transfer.tsx` rotates QR frames every ~300ms
 - Transfer apply + status:
@@ -148,5 +160,6 @@ flowchart TD
 |---|---|
 | Navigate to meeting actions and open transfer QR display screens | `e2e/attendance.spec.ts` |
 | Open transfer scanner and show idle transfer scan instructions (camera granted) | `e2e/attendance.spec.ts` (`Check-in scanner UI`) |
+| Open create-from-device scanner and show clone-only scan instructions | `e2e/meetings.spec.ts` |
 | Actual frame capture + transfer application via `expo-camera` payloads | Not automated today (tests do not drive camera payloads) |
 
