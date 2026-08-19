@@ -51,7 +51,10 @@ type MeetingsContextValue = {
   evaluateAttendeeQr: (rawQr: string) => Promise<AttendeeScanOutcome>;
   buildCloneTransferQrs: (meetingId: string) => Promise<string[]>;
   buildSyncTransferQrs: (meetingId: string) => Promise<string[]>;
-  applyTransferFrames: (frames: TransferFrame[]) => Promise<{ ok: boolean; message: string }>;
+  applyTransferFrames: (
+    frames: TransferFrame[],
+    mode?: 'transfer' | 'create-meeting',
+  ) => Promise<{ ok: boolean; message: string; meetingId?: string }>;
 };
 
 const MeetingsContext = createContext<MeetingsContextValue | null>(null);
@@ -312,7 +315,7 @@ export function MeetingsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const applyTransferFrames = useCallback(
-    async (frames: TransferFrame[]) => {
+    async (frames: TransferFrame[], mode: 'transfer' | 'create-meeting' = 'transfer') => {
       const rebuilt = await reconstructTransferPayload(frames);
       if (!rebuilt) {
         return { ok: false, message: 'Could not decode transfer QR set.' };
@@ -339,7 +342,13 @@ export function MeetingsProvider({ children }: { children: ReactNode }) {
             meetingKeys: { ...current.meetingKeys, [record.meeting.id]: key },
           };
         });
-        return { ok: true, message: 'Meeting copied successfully.' };
+        return { ok: true, message: 'Meeting copied successfully.', meetingId: record.meeting.id };
+      }
+      if (mode === 'create-meeting') {
+        return {
+          ok: false,
+          message: 'Attendance-sync QR codes cannot create meetings. Scan a Copy meeting QR instead.',
+        };
       }
       if (payload.kind === 'sync') {
         const meetingId = typeof payload.meetingId === 'string' ? payload.meetingId : '';

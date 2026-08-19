@@ -151,6 +151,17 @@ export default function CreateMeetingScreen() {
         )}
         <TextInput value={location} onChangeText={setLocation} placeholder="Location" placeholderTextColor={theme.textSecondary} style={inputStyle} />
         {validationError ? <ThemedText style={styles.error}>{validationError}</ThemedText> : null}
+        <ThemedView type="backgroundElement" style={styles.scanSection}>
+          <ThemedText type="subtitle">Create from another device</ThemedText>
+          <ThemedText themeColor="textSecondary">
+            Scan a Copy meeting QR to add the meeting and its attendee list without entering the details manually.
+          </ThemedText>
+          <AppButton
+            title="Scan meeting QR"
+            variant="secondary"
+            onPress={() => router.push({ pathname: '/scan', params: { mode: 'create-meeting' } })}
+          />
+        </ThemedView>
       </SafeAreaView>
     </ThemedView>
   );
@@ -173,5 +184,11 @@ const styles = StyleSheet.create({
   },
   timeRow: { flexDirection: 'row', gap: Spacing.two },
   timeInput: { flex: 1 },
+  scanSection: {
+    gap: Spacing.two,
+    marginTop: Spacing.two,
+    padding: Spacing.three,
+    borderRadius: Spacing.two,
+  },
   error: { color: '#c62828' },
 });

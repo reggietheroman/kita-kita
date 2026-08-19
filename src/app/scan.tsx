@@ -11,10 +11,14 @@ import { Spacing } from '@/constants/theme';
 import { useMeetings } from '@/hooks/use-meetings';
 import { attendeeDisplayName } from '@/lib/attendance';
 import { parseEnvelope, type TransferFrame } from '@/lib/qr-envelope';
+import { isCloneTransfer } from '@/lib/qr-transfer';
 
 export default function ScanScreen() {
   const router = useRouter();
-  const { mode = 'attendee', meetingId } = useLocalSearchParams<{ mode?: 'attendee' | 'transfer'; meetingId?: string }>();
+  const { mode = 'attendee', meetingId } = useLocalSearchParams<{
+    mode?: 'attendee' | 'transfer' | 'create-meeting';
+    meetingId?: string;
+  }>();
   const [permission, requestPermission] = useCameraPermissions();
   const { evaluateAttendeeQr, confirmCheckIn, applyTransferFrames } = useMeetings();
   const [locked, setLocked] = useState(false);
@@ -42,10 +46,17 @@ export default function ScanScreen() {
   }
 
   async function onBarcodeScanned(result: BarcodeScanningResult) {
-    if (mode === 'transfer') {
+    if (mode === 'transfer' || mode === 'create-meeting') {
       const parsed = parseEnvelope(result.data);
       if (!parsed || (parsed.t !== 'clone' && parsed.t !== 'sync')) {
         setOutcome({ status: 'transfer_error', message: 'This is not a transfer QR frame.' });
+        return;
+      }
+      if (mode === 'create-meeting' && !isCloneTransfer(parsed.t)) {
+        setOutcome({
+          status: 'transfer_error',
+          message: 'Attendance-sync QR codes cannot create meetings. Scan a Copy meeting QR instead.',
+        });
         return;
       }
       setTransferTotal(parsed.n);
@@ -81,17 +92,30 @@ export default function ScanScreen() {
   }
 
   useEffect(() => {
-    if (mode !== 'transfer' || transferTotal === 0 || transferReceived !== transferTotal) {
+    if (
+      (mode !== 'transfer' && mode !== 'create-meeting') ||
+      transferTotal === 0 ||
+      transferReceived !== transferTotal
+    ) {
       return;
     }
-    applyTransferFrames(Object.values(transferFrames)).then((applied) => {
-      setOutcome(
-        applied.ok
-          ? { status: 'transfer_done', message: applied.message }
-          : { status: 'transfer_error', message: applied.message },
-      );
-    });
-  }, [applyTransferFrames, mode, transferFrames, transferReceived, transferTotal]);
+    applyTransferFrames(Object.values(transferFrames), mode === 'create-meeting' ? 'create-meeting' : 'transfer').then(
+      (applied) => {
+        if (applied.ok && mode === 'create-meeting' && applied.meetingId) {
+          router.replace({
+            pathname: '/meeting/[meetingId]',
+            params: { meetingId: applied.meetingId },
+          });
+          return;
+        }
+        setOutcome(
+          applied.ok
+            ? { status: 'transfer_done', message: applied.message }
+            : { status: 'transfer_error', message: applied.message },
+        );
+      },
+    );
+  }, [applyTransferFrames, mode, router, transferFrames, transferReceived, transferTotal]);
 
   function onConfirm(id: string, name: string, targetMeetingId: string) {
     confirmCheckIn(targetMeetingId, id);
@@ -108,7 +132,9 @@ export default function ScanScreen() {
         <SafeAreaView style={styles.permission}>
           <ThemedText type="subtitle">Camera access</ThemedText>
           <ThemedText themeColor="textSecondary">
-            Allow camera access to scan attendee QR codes.
+            {mode === 'create-meeting'
+              ? 'Allow camera access to scan clone meeting QR codes.'
+              : 'Allow camera access to scan attendee QR codes.'}
           </ThemedText>
           <AppButton title="Allow camera" onPress={requestPermission} />
           <AppButton title="Close" variant="secondary" onPress={() => router.back()} />
@@ -134,6 +160,8 @@ export default function ScanScreen() {
             <ThemedText>
               {mode === 'transfer'
                 ? 'Point the camera at transfer QR frames.'
+                : mode === 'create-meeting'
+                  ? 'Point the camera at clone meeting QR frames.'
                 : 'Point the camera at an encrypted attendee QR code.'}
             </ThemedText>
           ) : null}

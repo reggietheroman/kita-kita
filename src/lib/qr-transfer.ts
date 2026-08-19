@@ -58,6 +58,10 @@ export function buildTransferFrames(
   return frames;
 }
 
+export function isCloneTransfer(type: TransferFrame['t']): boolean {
+  return type === 'clone';
+}
+
 export async function reconstructTransferPayload(frames: TransferFrame[]): Promise<{
   meetingId: string;
   payloadJson: string;

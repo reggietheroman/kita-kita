@@ -50,6 +50,34 @@ test.describe('Meeting Management Lifecycle', () => {
     await expect(page.getByText(SAMPLE_MEETINGS.generalAssembly.name).filter({ visible: true })).toBeVisible();
   });
 
+  test('offers creating a meeting by scanning a clone QR', async ({ page, context }) => {
+    await page.getByLabel('Add meeting').filter({ visible: true }).click();
+    await expect(page.getByText('Create meeting', { exact: true }).filter({ visible: true })).toBeVisible();
+    await expect(page.getByText('Create from another device').filter({ visible: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Scan meeting QR' }).filter({ visible: true })).toBeVisible();
+
+    await context.grantPermissions(['camera']);
+    await page.getByRole('button', { name: 'Scan meeting QR' }).filter({ visible: true }).click();
+
+    await expect(page.getByText('Point the camera at clone meeting QR frames.').filter({ visible: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Close' }).filter({ visible: true })).toBeVisible();
+  });
+
+  test('returns to the manual create form after closing meeting QR permission gate', async ({ page, context }) => {
+    await page.getByLabel('Add meeting').filter({ visible: true }).click();
+    await context.clearPermissions();
+    await page.getByRole('button', { name: 'Scan meeting QR' }).filter({ visible: true }).click();
+
+    await expect(page.getByText('Camera access', { exact: true }).filter({ visible: true })).toBeVisible();
+    await expect(
+      page.getByText('Allow camera access to scan clone meeting QR codes.').filter({ visible: true }),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Close' }).filter({ visible: true }).click();
+
+    await expect(page.getByText('Create meeting', { exact: true }).filter({ visible: true })).toBeVisible();
+    await expect(page.getByPlaceholder('Meeting name').filter({ visible: true })).toBeVisible();
+  });
+
   test('searches and filters meetings on the home screen', async ({ page }) => {
     // Create two meetings
     await fillAndCreateMeeting(page, SAMPLE_MEETINGS.generalAssembly);
