@@ -145,3 +145,15 @@ export async function fillAndAddAttendee(page: Page, attendee: AttendeeData): Pr
   // Should return to People screen and show new attendee
   await expect(page.getByText(`${attendee.firstName} ${attendee.lastName}`).filter({ visible: true })).toBeVisible();
 }
+
+/** Opens the attendee check-in scanner from meeting detail. */
+export async function openAttendeeScanner(page: Page): Promise<void> {
+  await page.getByRole('button', { name: 'Scan attendee QR' }).filter({ visible: true }).click();
+}
+
+/** Opens the transfer scanner from meeting actions. */
+export async function openTransferScanner(page: Page): Promise<void> {
+  await page.getByRole('button', { name: 'Meeting actions' }).filter({ visible: true }).click();
+  await expect(page.getByText('Meeting actions', { exact: true }).filter({ visible: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Scan from another device' }).filter({ visible: true }).click();
+}

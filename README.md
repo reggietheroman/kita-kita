@@ -81,5 +81,6 @@ Only collect attendee information needed for attendance operations. Review the [
 ## Project documentation
 
 - [Privacy documentation](docs/README.md)
+- [App flow diagrams](docs/app-flows.md)
 - [Expo documentation](https://docs.expo.dev/versions/v57.0.0/)
 - [Expo Router documentation](https://docs.expo.dev/router/introduction/)

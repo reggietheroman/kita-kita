@@ -2,6 +2,8 @@ import { expect, test } from '@playwright/test';
 import {
   fillAndAddAttendee,
   fillAndCreateMeeting,
+  openAttendeeScanner,
+  openTransferScanner,
   resetAppState,
   SAMPLE_ATTENDEES,
   SAMPLE_MEETINGS,
@@ -72,5 +74,59 @@ test.describe('Attendance and Meeting Actions', () => {
     // Navigate back to meeting details and check attendance
     await page.getByLabel('Back').filter({ visible: true }).click();
     await expect(page.getByText('0 of 1 expected').filter({ visible: true })).toBeVisible();
+  });
+});
+
+test.describe('Check-in scanner UI (reachable paths)', () => {
+  test.beforeEach(async ({ page }) => {
+    setupDialogHandler(page, 'accept');
+    await resetAppState(page);
+    await fillAndCreateMeeting(page, SAMPLE_MEETINGS.generalAssembly);
+  });
+
+  test('shows camera permission gate when opening attendee scanner without camera access', async ({
+    page,
+    context,
+  }) => {
+    await context.clearPermissions();
+
+    await openAttendeeScanner(page);
+
+    await expect(page.getByText('Camera access', { exact: true }).filter({ visible: true })).toBeVisible();
+    await expect(
+      page.getByText('Allow camera access to scan attendee QR codes.').filter({ visible: true }),
+    ).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Allow camera' }).filter({ visible: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Close' }).filter({ visible: true })).toBeVisible();
+  });
+
+  test('returns to meeting detail when closing the permission gate', async ({ page, context }) => {
+    await context.clearPermissions();
+
+    await openAttendeeScanner(page);
+    await page.getByRole('button', { name: 'Close' }).filter({ visible: true }).click();
+
+    await expect(page.getByRole('button', { name: 'Scan attendee QR' }).filter({ visible: true })).toBeVisible();
+    await expect(page.getByText(SAMPLE_MEETINGS.generalAssembly.name).filter({ visible: true })).toBeVisible();
+  });
+
+  test('shows idle attendee scan instructions when camera access is granted', async ({ page, context }) => {
+    await context.grantPermissions(['camera']);
+
+    await openAttendeeScanner(page);
+
+    await expect(
+      page.getByText('Point the camera at an encrypted attendee QR code.').filter({ visible: true }),
+    ).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Close' }).filter({ visible: true })).toBeVisible();
+  });
+
+  test('shows idle transfer scan instructions from meeting actions', async ({ page, context }) => {
+    await context.grantPermissions(['camera']);
+
+    await openTransferScanner(page);
+
+    await expect(page.getByText('Point the camera at transfer QR frames.').filter({ visible: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Close' }).filter({ visible: true })).toBeVisible();
   });
 });

@@ -1,0 +1,15 @@
+---
+description: Ensure each user journey has corresponding Playwright suites
+alwaysApply: true
+---
+
+# User-journey E2E coverage
+
+When a user journey in [`docs/app-flows.md`](docs/app-flows.md) is added/removed/behaviorally changed:
+
+1. Ensure the journey lists one or more Playwright specs in `e2e/`.
+2. Long journeys may split across multiple specs.
+3. Add/adjust E2E in the **code** commit (do not defer to the later diagram commit).
+4. Cover the reachable UI; do not invent brittle camera-frame injection for barcode decode.
+
+Skip if the change cannot affect a documented journey.

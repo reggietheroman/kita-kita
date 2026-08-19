@@ -16,3 +16,7 @@ Copies in this app (`.cursor/`, `docs/`, `scripts/verify-privacy-gates.js`, `.gi
 ## Engineering plans
 
 - [E2E workflow hardening (August 19, 2026)](081926-e2e-workflow-hardening/README.md)
+
+## App flow diagrams
+
+- [User-journey flow diagrams (committed behavior)](app-flows.md)

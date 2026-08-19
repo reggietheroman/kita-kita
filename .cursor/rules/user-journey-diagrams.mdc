@@ -1,0 +1,18 @@
+---
+description: Update user-journey diagrams only after blast-radius commits
+alwaysApply: true
+---
+
+# User-journey diagram governance
+
+When a change affects a user journey documented in [`docs/app-flows.md`](docs/app-flows.md)
+(screens/routes/CTAs/scan-transfer/CSV behavior that users experience):
+
+1. Read [`docs/app-flows.md`](docs/app-flows.md) first.
+2. Do **not** edit journey diagrams in the same dirty working tree as screen changes.
+3. Commit + run tests first.
+4. Then update diagrams in a separate `Docs` commit (optionally via the update skill).
+
+Skip if the change is unrelated to documented journeys.
+
+Bootstrap exception: creating/updating `docs/app-flows.md` itself is allowed to establish the first map.
