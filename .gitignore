@@ -38,6 +38,8 @@ yarn-error.*
 
 # tests
 coverage/
+test-results/
+playwright-report/
 
 example
 

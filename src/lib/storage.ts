@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { randomUUID } from 'expo-crypto';
+import { Platform } from 'react-native';
 
 import type { Attendee, Meeting } from '@/lib/attendance';
 import { generateMeetingKey, openForMeeting, sealForMeeting } from '@/lib/crypto';
@@ -15,6 +16,28 @@ type PersistedState = MeetingsState & {
   meetingKeys: Record<string, string>;
 };
 
+async function getSecureItem(key: string): Promise<string | null> {
+  if (Platform.OS === 'web') {
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem(`__secure_${key}`);
+    }
+    return AsyncStorage.getItem(`__secure_${key}`);
+  }
+  return SecureStore.getItemAsync(key);
+}
+
+async function setSecureItem(key: string, value: string): Promise<void> {
+  if (Platform.OS === 'web') {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(`__secure_${key}`, value);
+      return;
+    }
+    await AsyncStorage.setItem(`__secure_${key}`, value);
+    return;
+  }
+  await SecureStore.setItemAsync(key, value);
+}
+
 export async function loadState(): Promise<PersistedState> {
   const raw = await AsyncStorage.getItem(STORAGE_KEY);
   if (!raw) {
@@ -25,7 +48,7 @@ export async function loadState(): Promise<PersistedState> {
     if (!parsed?.keyId || !parsed.data) {
       return migrateLegacyState();
     }
-    const key = await SecureStore.getItemAsync(`${APP_KEYS_PREFIX}${parsed.keyId}`);
+    const key = await getSecureItem(`${APP_KEYS_PREFIX}${parsed.keyId}`);
     if (!key) {
       return migrateLegacyState();
     }
@@ -53,7 +76,7 @@ export async function loadState(): Promise<PersistedState> {
 
 export async function saveState(state: PersistedState): Promise<void> {
   const keyId = await ensureAppKey();
-  const key = await SecureStore.getItemAsync(`${APP_KEYS_PREFIX}${keyId}`);
+  const key = await getSecureItem(`${APP_KEYS_PREFIX}${keyId}`);
   if (!key) {
     return;
   }
@@ -63,14 +86,14 @@ export async function saveState(state: PersistedState): Promise<void> {
 }
 
 async function ensureAppKey(): Promise<string> {
-  const existing = await SecureStore.getItemAsync(APP_KEY_ID);
+  const existing = await getSecureItem(APP_KEY_ID);
   if (existing) {
     return existing;
   }
   const keyId = randomUUID();
   const appKey = await generateMeetingKey();
-  await SecureStore.setItemAsync(APP_KEY_ID, keyId);
-  await SecureStore.setItemAsync(`${APP_KEYS_PREFIX}${keyId}`, appKey);
+  await setSecureItem(APP_KEY_ID, keyId);
+  await setSecureItem(`${APP_KEYS_PREFIX}${keyId}`, appKey);
   return keyId;
 }
 

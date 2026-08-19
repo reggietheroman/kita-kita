@@ -37,13 +37,40 @@ The app uses Expo Router file-based routing. Application routes live in `src/app
 
 ## Quality checks
 
-Run the test suite, linter, and privacy gate with:
+Run the unit test suite, E2E tests, linter, and privacy gate with:
 
 ```bash
 npm test
+npm run test:e2e
 npm run lint
 npm run privacy-check
 ```
+
+### E2E setup and troubleshooting
+
+`@playwright/test` is the test runner; Chromium is a separate browser runtime. The E2E scripts provision Chromium automatically in a project-local Playwright directory, so they do not depend on a browser cache from another terminal, agent, or CI environment.
+
+From a clean checkout:
+
+```bash
+npm ci
+npm run test:e2e
+```
+
+The first E2E run downloads Chromium. To provision it separately:
+
+```bash
+npm run test:e2e:install
+```
+
+For interactive or headed debugging:
+
+```bash
+npm run test:e2e:ui
+npm run test:e2e:headed
+```
+
+If all E2E tests fail immediately with `browserType.launch` or `Executable doesn't exist`, rerun `npm run test:e2e:install`. If the error mentions the Expo server or port 8081, check whether another process is using that port and run `npm run web` to verify Expo Web starts.
 
 ## Privacy and data handling
 

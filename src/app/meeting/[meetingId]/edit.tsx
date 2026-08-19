@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, TextInput } from 'react-native';
+import { Platform, StyleSheet, TextInput, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -118,44 +118,74 @@ export default function EditMeetingScreen() {
           onAction={onSave}
         />
         <TextInput value={name} onChangeText={setName} placeholder="Name" placeholderTextColor={theme.textSecondary} style={inputStyle} />
-        <AppButton title={date || 'Choose date'} variant="secondary" onPress={() => setShowDatePicker(true)} />
-        {showDatePicker ? (
-          <DateTimePicker
-            value={datePickerValue}
-            mode="date"
-            display="default"
-            onValueChange={(_, value) => onDateChange(value)}
-            onDismiss={() => setShowDatePicker(false)}
-          />
-        ) : null}
-        <AppButton
-          title={startTime ? `Start: ${startTime}` : 'Choose start time'}
-          variant="secondary"
-          onPress={() => setShowStartPicker(true)}
-        />
-        {showStartPicker ? (
-          <DateTimePicker
-            value={startPickerValue}
-            mode="time"
-            display="default"
-            onValueChange={(_, value) => onStartTimeChange(value)}
-            onDismiss={() => setShowStartPicker(false)}
-          />
-        ) : null}
-        <AppButton
-          title={endTime ? `End: ${endTime}` : 'Choose end time'}
-          variant="secondary"
-          onPress={() => setShowEndPicker(true)}
-        />
-        {showEndPicker ? (
-          <DateTimePicker
-            value={endPickerValue}
-            mode="time"
-            display="default"
-            onValueChange={(_, value) => onEndTimeChange(value)}
-            onDismiss={() => setShowEndPicker(false)}
-          />
-        ) : null}
+        {Platform.OS === 'web' ? (
+          <>
+            <TextInput
+              value={date}
+              onChangeText={setDate}
+              placeholder="Date (YYYY-MM-DD)"
+              placeholderTextColor={theme.textSecondary}
+              style={inputStyle}
+            />
+            <View style={styles.timeRow}>
+              <TextInput
+                value={startTime}
+                onChangeText={setStartTime}
+                placeholder="Start time (HH:mm)"
+                placeholderTextColor={theme.textSecondary}
+                style={[inputStyle, styles.timeInput]}
+              />
+              <TextInput
+                value={endTime}
+                onChangeText={setEndTime}
+                placeholder="End time (HH:mm)"
+                placeholderTextColor={theme.textSecondary}
+                style={[inputStyle, styles.timeInput]}
+              />
+            </View>
+          </>
+        ) : (
+          <>
+            <AppButton title={date || 'Choose date'} variant="secondary" onPress={() => setShowDatePicker(true)} />
+            {showDatePicker ? (
+              <DateTimePicker
+                value={datePickerValue}
+                mode="date"
+                display="default"
+                onValueChange={(_, value) => onDateChange(value)}
+                onDismiss={() => setShowDatePicker(false)}
+              />
+            ) : null}
+            <AppButton
+              title={startTime ? `Start: ${startTime}` : 'Choose start time'}
+              variant="secondary"
+              onPress={() => setShowStartPicker(true)}
+            />
+            {showStartPicker ? (
+              <DateTimePicker
+                value={startPickerValue}
+                mode="time"
+                display="default"
+                onValueChange={(_, value) => onStartTimeChange(value)}
+                onDismiss={() => setShowStartPicker(false)}
+              />
+            ) : null}
+            <AppButton
+              title={endTime ? `End: ${endTime}` : 'Choose end time'}
+              variant="secondary"
+              onPress={() => setShowEndPicker(true)}
+            />
+            {showEndPicker ? (
+              <DateTimePicker
+                value={endPickerValue}
+                mode="time"
+                display="default"
+                onValueChange={(_, value) => onEndTimeChange(value)}
+                onDismiss={() => setShowEndPicker(false)}
+              />
+            ) : null}
+          </>
+        )}
         <TextInput value={location} onChangeText={setLocation} placeholder="Location" placeholderTextColor={theme.textSecondary} style={inputStyle} />
         {validationError ? <ThemedText themeColor="textSecondary">{validationError}</ThemedText> : null}
       </SafeAreaView>
