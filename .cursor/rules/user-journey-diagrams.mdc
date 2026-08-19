@@ -1,5 +1,5 @@
 ---
-description: Update user-journey diagrams only after blast-radius commits
+description: Update user-journey diagrams only after the user has committed blast-radius code
 alwaysApply: true
 ---
 
@@ -9,9 +9,10 @@ When a change affects a user journey documented in [`docs/app-flows.md`](docs/ap
 (screens/routes/CTAs/scan-transfer/CSV behavior that users experience):
 
 1. Read [`docs/app-flows.md`](docs/app-flows.md) first.
-2. Do **not** edit journey diagrams in the same dirty working tree as screen changes.
-3. Commit + run tests first.
-4. Then update diagrams in a separate `Docs` commit (optionally via the update skill).
+2. Do **not** edit journey diagrams in the same dirty working tree as screen/code changes.
+3. Do **not** create git commits. Wait until the user has committed the tested code.
+4. After that commit is on HEAD, update diagrams (optionally via the update skill).
+   Put diagram edits in a later `Docs` change; the user decides when to commit it.
 
 Skip if the change is unrelated to documented journeys.
 

@@ -16,7 +16,7 @@ Use this when a change affects a user journey and you need to keep the journeyâ€
 5. Prefer reachable UI assertions (buttons, navigation, copy, masked values).
 6. If barcode decode via `expo-camera` is involved, do not invent brittle camera-frame injection; cover the reachable scanner UI paths (permission copy, close/back, non-camera actions).
 7. Update the journey-to-E2E mapping row(s) in `docs/app-flows.md` whenever you add/modify mapped suites.
-8. Run `npm run test:e2e` (or the smallest applicable subset) before committing.
+8. Run `npm run test:e2e` (or the smallest applicable subset) before considering the work done. Do not create git commits unless the user explicitly asks.
 
 ## Split/coverage guidance
 
