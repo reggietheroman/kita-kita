@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy Notice — Kita-Kita</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --text: #1a1a1a;
+        --muted: #555;
+        --bg: #fafafa;
+        --accent: #208aef;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --text: #f0f0f0;
+          --muted: #aaa;
+          --bg: #121212;
+        }
+      }
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        line-height: 1.6;
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 1.5rem;
+        color: var(--text);
+        background: var(--bg);
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+        margin-top: 1.5rem;
+      }
+      a {
+        color: var(--accent);
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      ul {
+        padding-left: 1.25rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Privacy Notice — Kita-Kita Attendance App</h1>
+    <p class="meta">
+      <strong>Effective date:</strong> September 1, 2026<br />
+      <strong>Personal Information Controller:</strong> Kita-Kita (event organizer using this app on their device)
+    </p>
+
+    <h2>1. What personal information we collect</h2>
+    <p>When you use Kita-Kita for event check-ins or participant registration, the app may store:</p>
+    <ul>
+      <li>Full name (first name, last name)</li>
+      <li>Contact details (email address, mobile phone number) when provided</li>
+      <li>Attendance identifiers (attendee ID, QR code payload, check-in timestamps)</li>
+    </ul>
+
+    <h2>2. Purpose of collection</h2>
+    <p>Data is processed solely to:</p>
+    <ul>
+      <li>Verify attendance and process event check-ins</li>
+      <li>Generate attendance statistics for event organizers</li>
+      <li>Transfer meeting data between authorized devices via QR codes</li>
+    </ul>
+    <p>
+      <strong>Lawful basis:</strong> Freely given, specific, and informed consent (RA 10173 Section 12(a)) and
+      contractual necessity to administer event participation (Section 12(b)).
+    </p>
+
+    <h2>3. Data storage and security</h2>
+    <ul>
+      <li>
+        <strong>Local-first:</strong> Meeting and attendee data is stored on the device running the app. There is no
+        cloud sync service in Kita-Kita.
+      </li>
+      <li>
+        <strong>Encryption:</strong> Application state is encrypted before being written to local storage. Encryption
+        keys are held in the platform secure store.
+      </li>
+      <li><strong>No sale:</strong> We do not sell, rent, or trade personal information to advertisers or third parties.</li>
+      <li><strong>Camera:</strong> The camera is used only to scan QR codes for check-in and device transfer. Images are not stored.</li>
+    </ul>
+
+    <h2>4. Data retention</h2>
+    <p>
+      Personal information remains on the device until the event organizer deletes individual attendees, deletes a
+      meeting, or uses the wipe-event-data option. Organizers are responsible for deleting data when it is no longer
+      needed.
+    </p>
+
+    <h2>5. Your rights (RA 10173 Section 16)</h2>
+    <p>Under Philippine law you may:</p>
+    <ul>
+      <li>Be informed about how your data is collected and used</li>
+      <li>Access and receive a copy of your data (export via CSV or JSON in the app)</li>
+      <li>Rectify inaccurate information (edit attendee records in the app)</li>
+      <li>Request erasure (delete attendee or meeting data in the app)</li>
+      <li>Object or withdraw consent</li>
+      <li>File a complaint with the National Privacy Commission (NPC)</li>
+    </ul>
+
+    <h2>6. Contact</h2>
+    <p>
+      For privacy questions or data-subject requests, contact the event organizer operating this app, or reach the
+      Kita-Kita maintainer via
+      <a href="https://github.com/reggietheroman/kita-kita/issues">GitHub Issues</a>.
+    </p>
+    <p>
+      <a href="terms.html">Terms of Service</a> ·
+      <a href="support.html">Support</a>
+    </p>
+  </body>
+</html>

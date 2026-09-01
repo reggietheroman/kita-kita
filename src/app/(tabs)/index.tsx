@@ -40,6 +40,14 @@ export default function HomeScreen() {
           actionAccessibilityLabel="Add meeting"
           onAction={() => router.push('/create-meeting')}
         />
+        <AppButton
+          title="Privacy"
+          variant="secondary"
+          compact
+          accessibilityLabel="Privacy"
+          style={styles.privacyLink}
+          onPress={() => router.push('/privacy')}
+        />
         <EntitySearch value={query} onChangeText={setQuery} placeholder="Search meetings" />
 
         <FlatList
@@ -130,6 +138,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingBottom: BottomTabInset + Spacing.four,
     gap: Spacing.two,
+  },
+  privacyLink: {
+    alignSelf: 'flex-start',
   },
   list: {
     flex: 1,

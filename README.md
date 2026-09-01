@@ -78,6 +78,14 @@ Kita-Kita is designed for local-first attendance workflows. Meeting and attendee
 
 Only collect attendee information needed for attendance operations. Review the [privacy notice template](docs/privacy-notice-template.md), [PIA template](docs/privacy-impact-assessment-template.md), and [DPA compliance plan](docs/dpa-compliance-plan.md) before deploying the app for real events.
 
+Public privacy, terms, and support pages (for store listings): [privacy.html](docs/privacy.html), [terms.html](docs/terms.html), [support.html](docs/support.html). Enable GitHub Pages from `/docs` to host them at `https://reggietheroman.github.io/kita-kita/`.
+
+## App store release
+
+- [App-store release runbook](docs/app-store-release-runbook.md)
+- [Console checklist (before/after package name)](docs/store-release-console-checklist.md)
+- [Choose package name — last step before builds](docs/choose-package-name.md)
+
 ## Project documentation
 
 - [Integrate (attendee CSV)](docs/integrate.md)

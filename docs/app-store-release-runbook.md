@@ -37,6 +37,8 @@ runbook or commit them.
 
 ### 2. Reserve permanent app identifiers
 
+**Choose identifiers as the last step before your first production build.** Until then, leave `ios.bundleIdentifier` and `android.package` unset in `app.json`. See [choose-package-name.md](choose-package-name.md).
+
 Choose identifiers once; changing them later creates a different store app.
 Add them to `app.json` under `expo`:
 
@@ -76,12 +78,21 @@ From the repository root:
 npm install --global eas-cli
 eas login
 eas whoami
-eas build:configure
+eas init
 ```
 
-Review the generated `eas.json` before building. Keep the `production` build
-profile for store binaries. Commit configuration changes, but never commit
-secrets.
+If `eas.json` is not present yet, run `eas build:configure`. Review the generated [eas.json](../eas.json) before building. Keep the `production` build profile for store binaries. Commit configuration changes, but never commit secrets.
+
+### 3b. Publish privacy and support pages (GitHub Pages)
+
+Static pages live in `docs/privacy.html` and `docs/support.html`. Enable **GitHub Pages** from the repo **Settings → Pages** with source **main** branch and **/docs** folder. After deploy, confirm:
+
+- `https://reggietheroman.github.io/kita-kita/privacy.html`
+- `https://reggietheroman.github.io/kita-kita/support.html`
+
+Use the privacy URL in App Store Connect and Google Play Data safety forms.
+
+For a full console checklist, see [store-release-console-checklist.md](store-release-console-checklist.md).
 
 ### 4. Create the store apps and credentials
 

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "kita-kita",
+    "name": "Kita-Kita",
     "slug": "kita-kita",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,16 +8,24 @@
     "scheme": "kitakita",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.reggietheroman.tapok",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.reggietheroman.tapok",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "output": "static",
@@ -47,6 +55,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "64d7d33d-b37d-485d-96a1-a47a7faee740"
+      }
+    },
+    "owner": "reggietheroman"
   }
 }

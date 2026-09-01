@@ -17,6 +17,8 @@ Copies in this app (`.cursor/`, `docs/`, `scripts/verify-privacy-gates.js`, `.gi
 
 - [E2E workflow hardening (August 19, 2026)](081926-e2e-workflow-hardening/README.md)
 - [App-store release runbook](app-store-release-runbook.md)
+- [Store release console checklist](store-release-console-checklist.md)
+- [Choose package name (last step)](choose-package-name.md)
 
 ## App flow diagrams
 
