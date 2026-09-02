@@ -13,7 +13,7 @@ export default function PrivacyScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        <ScreenHeader title="Privacy" subtitle="How Kita-Kita handles attendee data" />
+        <ScreenHeader title="Privacy" subtitle="How Tapok handles attendee data" />
         <ScrollView contentContainerStyle={styles.content}>
           <ThemedText type="smallBold">Local-first storage</ThemedText>
           <ThemedText themeColor="textSecondary">
