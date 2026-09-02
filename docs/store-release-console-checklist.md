@@ -11,21 +11,22 @@ Use this checklist while preparing Kita-Kita for App Store and Google Play. Comp
 - [ ] Link this repo to an Expo project: `eas init` (adds `extra.eas.projectId` to `app.json`)
 - [ ] Confirm [eas.json](../eas.json) is committed with `production` and `preview` profiles
 
-### GitHub Pages (privacy + support URLs)
+### Cloudflare (privacy + support URLs)
 
-- [ ] In GitHub repo **Settings → Pages**, set source to **Deploy from branch** → `main` → `/docs`
+- [ ] Confirm `reggietheroman.app` is an active zone on the Cloudflare account
+- [ ] Deploy the pages in `www/`: `npm run site:deploy`
 - [ ] After deploy, verify:
-  - [ ] https://reggietheroman.github.io/kita-kita/privacy.html
-  - [ ] https://reggietheroman.github.io/kita-kita/support.html
-  - [ ] https://reggietheroman.github.io/kita-kita/terms.html
+  - [ ] https://tapok.reggietheroman.app/privacy-policy
+  - [ ] https://tapok.reggietheroman.app/support
+  - [ ] https://tapok.reggietheroman.app/terms
 - [ ] Use the privacy URL in both store consoles
 
 ### Listing assets (draft without final package)
 
-- [ ] App display name: **Kita-Kita**
+- [ ] App display name: **Tapok** (Kita-Kita is the internal project name only)
 - [ ] Short and full description (local-first attendance, QR check-in, no cloud sync)
 - [ ] Screenshots: phone required; tablet if you declare tablet support
-- [ ] Support email or GitHub Issues URL
+- [ ] Support email: support@reggietheroman.app
 - [ ] Age / content rating questionnaire answers prepared
 - [ ] App Privacy (Apple) and Data safety (Google) answers drafted — data stored on device, encrypted, not sold, not used for tracking
 

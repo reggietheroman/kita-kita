@@ -7,7 +7,7 @@ The iOS **bundle identifier** and Android **package name** are permanent. Pick t
 Complete first:
 
 - [eas.json](../eas.json) and EAS project link (`eas init`)
-- GitHub Pages privacy and support URLs live
+- Privacy and support URLs live on `tapok.reggietheroman.app`
 - In-app Privacy screen shipped
 - Store listing copy and screenshots drafted
 
@@ -17,7 +17,8 @@ Then choose IDs, write them into [app.json](../app.json), create App Store Conne
 
 Use reverse-DNS style: lowercase, no spaces, e.g. `com.publisher.appname`.
 
-- You do **not** need a matching domain.
+- You do **not** need a matching domain, though `app.reggietheroman.tapok` mirrors the site at
+  `tapok.reggietheroman.app`.
 - The ID must be **unique** on Apple’s portal for your team.
 - iOS and Android should use the **same string** when possible.
 
@@ -25,8 +26,8 @@ Use reverse-DNS style: lowercase, no spaces, e.g. `com.publisher.appname`.
 
 | Platform | Value |
 |----------|-------|
-| iOS `bundleIdentifier` | `com.reggietheroman.tapok` |
-| Android `package` | `com.reggietheroman.tapok` |
+| iOS `bundleIdentifier` | `app.reggietheroman.tapok` |
+| Android `package` | `app.reggietheroman.tapok` |
 
 This identifier is now configured in `app.json`. Use it exactly when creating both store apps.
 
@@ -36,10 +37,10 @@ This identifier is now configured in `app.json`. Use it exactly when creating bo
 {
   "expo": {
     "ios": {
-      "bundleIdentifier": "com.reggietheroman.tapok"
+      "bundleIdentifier": "app.reggietheroman.tapok"
     },
     "android": {
-      "package": "com.reggietheroman.tapok"
+      "package": "app.reggietheroman.tapok"
     }
   }
 }

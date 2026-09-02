@@ -1,0 +1,15 @@
+{
+  // Public site for the Tapok app: privacy policy, terms, and support pages.
+  // Assets only — there is no Worker script, so requests are not billable.
+  "name": "tapok-site",
+  "compatibility_date": "2026-09-02",
+  "assets": {
+    "directory": "./www"
+  },
+  "routes": [
+    {
+      "pattern": "tapok.reggietheroman.app",
+      "custom_domain": true
+    }
+  ]
+}

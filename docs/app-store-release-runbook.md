@@ -83,12 +83,21 @@ eas init
 
 If `eas.json` is not present yet, run `eas build:configure`. Review the generated [eas.json](../eas.json) before building. Keep the `production` build profile for store binaries. Commit configuration changes, but never commit secrets.
 
-### 3b. Publish privacy and support pages (GitHub Pages)
+### 3b. Publish privacy and support pages (Cloudflare)
 
-Static pages live in `docs/privacy.html` and `docs/support.html`. Enable **GitHub Pages** from the repo **Settings → Pages** with source **main** branch and **/docs** folder. After deploy, confirm:
+Static pages live in [`www/`](../www) and deploy to Cloudflare Workers Static Assets via
+[`wrangler.jsonc`](../wrangler.jsonc). There is no Worker script — the config is assets only.
 
-- `https://reggietheroman.github.io/kita-kita/privacy.html`
-- `https://reggietheroman.github.io/kita-kita/support.html`
+```sh
+npm run site:deploy
+```
+
+The custom domain `tapok.reggietheroman.app` is declared in the `routes` block, so `reggietheroman.app` must be an
+active zone on the Cloudflare account. After deploy, confirm:
+
+- `https://tapok.reggietheroman.app/privacy-policy`
+- `https://tapok.reggietheroman.app/support`
+- `https://tapok.reggietheroman.app/terms`
 
 Use the privacy URL in App Store Connect and Google Play Data safety forms.
 

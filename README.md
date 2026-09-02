@@ -78,7 +78,7 @@ Kita-Kita is designed for local-first attendance workflows. Meeting and attendee
 
 Only collect attendee information needed for attendance operations. Review the [privacy notice template](docs/privacy-notice-template.md), [PIA template](docs/privacy-impact-assessment-template.md), and [DPA compliance plan](docs/dpa-compliance-plan.md) before deploying the app for real events.
 
-Public privacy, terms, and support pages (for store listings): [privacy.html](docs/privacy.html), [terms.html](docs/terms.html), [support.html](docs/support.html). Enable GitHub Pages from `/docs` to host them at `https://reggietheroman.github.io/kita-kita/`.
+Public privacy, terms, and support pages (for store listings) live in [`www/`](www) and deploy to Cloudflare Workers Static Assets at `https://tapok.reggietheroman.app/` via `npm run site:deploy`. Kita-Kita is the internal project name; **Tapok** is the public-facing app name used on those pages and in the store listings.
 
 ## App store release
 
